@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Colourizer</string>
+    <string name="underlined_text"><u>Upload Image</u></string>
+</resources>
