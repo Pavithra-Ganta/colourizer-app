@@ -15,6 +15,7 @@ import com.github.dhaval2404.imagepicker.ImagePicker
 class MainActivity2 : AppCompatActivity() {
     private lateinit var img: ImageView
     private lateinit var btn: Button
+    private lateinit var btn2: Button
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -24,14 +25,19 @@ class MainActivity2 : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        img=findViewById(R.id.imageView3)
-        btn=findViewById(R.id.button4)
+        img=findViewById(R.id.imageView2)
+        btn=findViewById(R.id.button2)
         btn.setOnClickListener{
             ImagePicker.with(this)
                 .crop()	    			//Crop image(Optional), Check Customization for more option
                 .compress(1024)			//Final image size will be less than 1 MB(Optional)
                 .maxResultSize(1080, 1080)	//Final image resolution will be less than 1080 x 1080(Optional)
                 .start()
+        }
+        btn2=findViewById(R.id.button)
+        btn2.setOnClickListener{
+            intent=Intent(this, MainActivity3::class.java)
+            startActivity(intent)
         }
     }
 

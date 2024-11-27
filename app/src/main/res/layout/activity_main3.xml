@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity2">
+    tools:context=".MainActivity3">
 
     <TextView
         android:id="@+id/textView2"
@@ -32,7 +32,7 @@
         app:srcCompat="@drawable/baseline_home_24" />
 
     <ImageButton
-        android:id="@+id/imagebutton"
+        android:id="@+id/imageButton2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#00FFFFFF"
@@ -42,56 +42,32 @@
         app:srcCompat="@drawable/baseline_menu_24" />
 
     <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/imageView4"
         android:layout_width="336dp"
         android:layout_height="503dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="84dp"
         android:foregroundGravity="center"
         android:padding="5dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2"
         app:shapeAppearanceOverlay="@style/circular"
-        app:srcCompat="@drawable/pic"
+        app:srcCompat="@drawable/pics"
         app:strokeColor="@color/black"
         app:strokeWidth="3dp" />
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="233dp"
-        android:layout_height="56dp"
-        android:layout_marginTop="20dp"
-        android:padding="5dp"
-        android:text="Generate Colour Image"
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="270dp"
+        android:layout_height="48dp"
+        android:fontFamily="@font/amarante"
+        android:gravity="center"
+        android:text="Final Image"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/imageView4"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="328dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="464dp"
-        android:backgroundTint="#000000"
-        android:gravity="bottom|center"
-        android:text="@string/underlined_text"
-        android:textSize="18dp"
-        android:textStyle="bold"
-        app:cornerRadius="5dp"
-        app:layout_constraintEnd_toEndOf="@+id/imageView2"
-        app:layout_constraintStart_toStartOf="@+id/imageView2"
-        app:layout_constraintTop_toTopOf="@+id/imageView2" />
-
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="364dp"
-        android:layout_height="190dp"
-        android:layout_marginTop="68dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.347"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2"
-        app:srcCompat="@drawable/pal" />
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
