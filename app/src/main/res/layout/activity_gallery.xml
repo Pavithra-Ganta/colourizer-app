@@ -1,0 +1,27 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+    <include layout="@layout/appbar"/>
+
+    <TextView
+        android:id="@+id/gal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:fontFamily="@font/amarante"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:text="Gallery"
+        android:textSize="24sp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="686dp"
+        android:layout_marginBottom="50dp"
+        android:scrollbars="vertical" />
+</LinearLayout>
