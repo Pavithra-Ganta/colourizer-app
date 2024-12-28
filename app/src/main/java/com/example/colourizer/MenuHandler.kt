@@ -8,26 +8,33 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat.startActivity
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
 object MenuHandler {
 
+    private lateinit var googleSignInClient: GoogleSignInClient
+
     fun setupAppBar(activity: Activity, toolbar: Toolbar) {
-        // Set the toolbar as the support action bar
         if (activity is AppCompatActivity) {
             activity.setSupportActionBar(toolbar)
         }
 
-        // Set up the Home button (navigation icon)
         toolbar.setNavigationIcon(R.drawable.baseline_home_24)
         toolbar.setNavigationOnClickListener {
-            // Handle Home button click (navigate to the home activity)
             val intent = Intent(activity, MainActivity2::class.java) // Change to your home activity
             activity.startActivity(intent)
         }
     }
 
     fun setupMenu(activity: Activity, menuButton: ImageButton) {
+        // Initialize Google Sign-In Client if not already initialized
+        if (!::googleSignInClient.isInitialized) {
+            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
+            googleSignInClient = GoogleSignIn.getClient(activity, gso)
+        }
+
         menuButton.setOnClickListener {
             val popupMenu = PopupMenu(activity, menuButton)
             popupMenu.menuInflater.inflate(R.menu.menu_file, popupMenu.menu)
@@ -51,8 +58,14 @@ object MenuHandler {
                 true
             }
             R.id.item3 -> {
-                val intent = Intent(activity, Gallery::class.java)
-                activity.startActivity(intent)
+                // Handle Google Sign-Out
+                googleSignInClient.signOut().addOnCompleteListener {
+                    Toast.makeText(activity, "Signed out successfully", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(activity, MainActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    activity.startActivity(intent)
+                    activity.finish()
+                }
                 true
             }
             else -> false

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "53899618205",
+    "project_id": "colourizer-57c7f",
+    "storage_bucket": "colourizer-57c7f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:53899618205:android:5fdcf3b64ff6cb9cad3174",
+        "android_client_info": {
+          "package_name": "com.example.colourizer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "53899618205-19mmq29of034gh2l61db7p6q0vc310h8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.colourizer",
+            "certificate_hash": "ef97ed75a8e988b97a6321254287c64998775f4f"
+          }
+        },
+        {
+          "client_id": "53899618205-dejlr8bmuun2l12jg25fsavub135rs6q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3fG5lEuA4kxwCe5QP0QoGq3YQ7GmhEFo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "53899618205-dejlr8bmuun2l12jg25fsavub135rs6q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
