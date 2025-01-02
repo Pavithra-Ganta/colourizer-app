@@ -2,8 +2,6 @@ package com.example.colourizer
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -16,6 +14,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
+import com.example.colourizer.BuildConfig
 import com.google.firebase.auth.GoogleAuthProvider
 
 class MainActivity : AppCompatActivity() {
@@ -31,6 +30,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+
+        // Handle development mode
+        if (BuildConfig.DEBUG) {
+            Toast.makeText(this, "Debug Mode: Skipping sign-in", Toast.LENGTH_SHORT).show()
+            navigateToMainActivity2()
+            return
+        }
 
         // Edge-to-edge display
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -64,6 +70,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }.start()
+
         signIn()
     }
 
