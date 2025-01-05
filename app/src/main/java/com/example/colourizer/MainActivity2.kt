@@ -71,7 +71,7 @@ class MainActivity2 : AppCompatActivity() {
     }
 
     private fun uploadImage(imageFile: File) {
-        val url = "http://192.168.158.135:5000/colorize"
+        val url = "http://192.168.125.135:5000/colorize"
         val client = OkHttpClient()
 
         val mediaType = "image/jpeg".toMediaTypeOrNull()
