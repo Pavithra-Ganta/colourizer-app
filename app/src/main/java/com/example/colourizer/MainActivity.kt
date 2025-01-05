@@ -32,11 +32,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         // Handle development mode
-        if (BuildConfig.DEBUG) {
-            Toast.makeText(this, "Debug Mode: Skipping sign-in", Toast.LENGTH_SHORT).show()
-            navigateToMainActivity2()
-            return
-        }
+//        if (BuildConfig.DEBUG) {
+//            Toast.makeText(this, "Debug Mode: Skipping sign-in", Toast.LENGTH_SHORT).show()
+//            navigateToMainActivity2()
+//            return
+//        }
 
         // Edge-to-edge display
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->

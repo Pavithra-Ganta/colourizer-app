@@ -1,5 +1,6 @@
 package com.example.colourizer
 
+import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -8,7 +9,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +24,11 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
+import java.io.ByteArrayOutputStream
 
 class MainActivity3 : AppCompatActivity() {
 
@@ -36,6 +44,21 @@ class MainActivity3 : AppCompatActivity() {
         // Use view binding to inflate the layout
         binding = ActivityMain3Binding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val imagePath = intent.getStringExtra("colorized_image_path")
+        imagePath?.let { path ->
+            val imageFile = File(path)
+            if (imageFile.exists()) {
+                // Load the image into an ImageView (for example)
+                val bitmap = BitmapFactory.decodeFile(imageFile.absolutePath)
+                val imageView = findViewById<ImageView>(R.id.imageView4) // replace with your ImageView id
+                imageView.setImageBitmap(bitmap)
+            } else {
+                Toast.makeText(this, "Image not found!", Toast.LENGTH_SHORT).show()
+            }
+        } ?: run {
+            Toast.makeText(this, "No image path received.", Toast.LENGTH_SHORT).show()
+        }
 
         // Apply system bar insets
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
@@ -99,41 +122,45 @@ class MainActivity3 : AppCompatActivity() {
             }
         }
 
-        // Save image functionality
+        // Save image to device functionality
         binding.floatingActionButton.setOnClickListener {
             val drawable = binding.imageView4.drawable
             if (drawable is BitmapDrawable) {
                 val bitmap = drawable.bitmap
-                val sdCard = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
-                if (sdCard != null) {
-                    val directory = File(sdCard.absolutePath)
-                    if (!directory.exists()) {
-                        directory.mkdir()
-                    }
-                    val fileName = "${System.currentTimeMillis()}.jpg"
-                    val outputFile = File(directory, fileName)
+                val contentValues = ContentValues().apply {
+                    put(MediaStore.Images.Media.DISPLAY_NAME, "colorized_image_${System.currentTimeMillis()}.jpg")
+                    put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+                    put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+                }
+
+                val uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+
+                uri?.let { uri ->
                     try {
-                        val fileOutputStream = FileOutputStream(outputFile)
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream)
-                        fileOutputStream.flush()
-                        fileOutputStream.close()
+                        val outputStream = contentResolver.openOutputStream(uri)
+                        // Use safe call to ensure outputStream is not null
+                        outputStream?.let { stream ->
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                            stream.close()
 
-                        val intent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
-                        intent.data = Uri.fromFile(outputFile)
-                        sendBroadcast(intent)
+                            // Notify the media scanner to update the gallery
+                            sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri))
 
-                        Toast.makeText(this, "Image Saved Successfully", Toast.LENGTH_SHORT).show()
-                    } catch (e: FileNotFoundException) {
-                        Toast.makeText(this, "File not found: ${e.message}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, "Image Saved Successfully", Toast.LENGTH_SHORT).show()
+                        } ?: run {
+                            Toast.makeText(this, "Failed to open output stream", Toast.LENGTH_SHORT).show()
+                        }
                     } catch (e: IOException) {
-                        Toast.makeText(this, "Error saving file: ${e.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Error saving image: ${e.message}", Toast.LENGTH_SHORT).show()
                     }
-                } else {
-                    Toast.makeText(this, "Unable to access storage", Toast.LENGTH_SHORT).show()
+                } ?: run {
+                    Toast.makeText(this, "Failed to create file", Toast.LENGTH_SHORT).show()
                 }
             } else {
                 Toast.makeText(this, "No image to save", Toast.LENGTH_SHORT).show()
             }
         }
+
     }
+
 }
