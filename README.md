@@ -1,13 +1,5 @@
----
-title: Colourizer Model
-emoji: 📈
-colorFrom: gray
-colorTo: yellow
-sdk: gradio
-sdk_version: 5.9.1
-app_file: app.py
-pinned: false
-license: apache-2.0
----
+Colorize any Black and White Image
 
-Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
+1. download model from [(https://data.deepai.org/deoldify/ColorizeArtistic_gen.pth)] and place it in the folder with app.py 
+
+2. run python app.py and copy the localhost url link, test in Postman or directly use the link as API
