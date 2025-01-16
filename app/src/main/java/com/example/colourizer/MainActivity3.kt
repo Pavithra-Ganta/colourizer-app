@@ -21,14 +21,13 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.colourizer.databinding.ActivityMain3Binding
 import java.io.File
-import java.io.FileNotFoundException
-import java.io.FileOutputStream
 import java.io.IOException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import java.io.ByteArrayOutputStream
+import com.bumptech.glide.Glide
 
 class MainActivity3 : AppCompatActivity() {
 
@@ -39,28 +38,23 @@ class MainActivity3 : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Enable edge-to-edge display (if needed)
         enableEdgeToEdge()
 
-        // Use view binding to inflate the layout
+        // Initialize view binding
         binding = ActivityMain3Binding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Extract the image path from intent
         val imagePath = intent.getStringExtra("colorized_image_path")
-        imagePath?.let { path ->
-            val imageFile = File(path)
-            if (imageFile.exists()) {
-                // Load the image into an ImageView (for example)
-                val bitmap = BitmapFactory.decodeFile(imageFile.absolutePath)
-                val imageView = findViewById<ImageView>(R.id.imageView4) // replace with your ImageView id
-                imageView.setImageBitmap(bitmap)
-            } else {
-                Toast.makeText(this, "Image not found!", Toast.LENGTH_SHORT).show()
-            }
-        } ?: run {
-            Toast.makeText(this, "No image path received.", Toast.LENGTH_SHORT).show()
-        }
 
-        // Apply system bar insets
+        Glide.with(this)
+            .load(imagePath)
+            .into(binding.imageView4)
+
+
+        // Apply system bar insets for proper layout
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -71,27 +65,17 @@ class MainActivity3 : AppCompatActivity() {
         toolbar = findViewById(R.id.toolbar)
         menuButton = findViewById(R.id.menuButton)
 
-        // Set up the app bar and menu button using MenuHandler
+        // Set up the app bar and menu button using MenuHandler (if applicable)
         MenuHandler.setupAppBar(this, toolbar)
         MenuHandler.setupMenu(this, menuButton)
 
-        // Display the colorized image
-        val colorizedImageUri = intent.getStringExtra("colorized_image_path")
-        if (colorizedImageUri != null) {
-            val file = File(Uri.parse(colorizedImageUri).path!!)
-            val bitmap = BitmapFactory.decodeFile(file.absolutePath)
-            binding.imageView4.setImageBitmap(bitmap)
-        } else {
-            Toast.makeText(this, "No colorized image found", Toast.LENGTH_SHORT).show()
-        }
-
-        // FloatingActionButton to navigate to another activity
+        // Floating action button to navigate to another activity
         binding.floatingActionButton2.setOnClickListener {
             val intent = Intent(this, MainActivity4::class.java)
             startActivity(intent)
         }
 
-        // Wishlist button functionality
+        // Favourites button functionality
         binding.floatingActionButton4.setOnClickListener {
             if (isFavorite) {
                 binding.floatingActionButton4.imageTintList = ContextCompat.getColorStateList(this, R.color.black)
@@ -138,7 +122,6 @@ class MainActivity3 : AppCompatActivity() {
                 uri?.let { uri ->
                     try {
                         val outputStream = contentResolver.openOutputStream(uri)
-                        // Use safe call to ensure outputStream is not null
                         outputStream?.let { stream ->
                             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
                             stream.close()
@@ -160,7 +143,5 @@ class MainActivity3 : AppCompatActivity() {
                 Toast.makeText(this, "No image to save", Toast.LENGTH_SHORT).show()
             }
         }
-
     }
-
 }
