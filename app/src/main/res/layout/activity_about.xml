@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".About"
+    tools:openDrawer="start">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            layout="@layout/appbar" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/abt"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/amarante"
+                android:gravity="center"
+                android:text="About Us"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toTopOf="@+id/imageView5"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_editor_absoluteX="0dp" />
+
+            <ImageView
+                android:id="@+id/imageView5"
+                android:layout_width="409dp"
+                android:layout_height="257dp"
+                android:layout_marginTop="64dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.363"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/us" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="354dp"
+                android:layout_height="279dp"
+                android:layout_marginTop="16dp"
+                android:fontFamily="serif"
+                android:gravity="center"
+                android:justificationMode="inter_word"
+                android:text="Welcome to Colourizer, created by tech enthusiasts Pavithra, Sudeep, and Srujana.\n\nWe are a team of computer science enthusiasts passionate about blending technology with artistry. Colourizer aims to transform black-and-white images into vibrant memories, making colorization accessible to everyone.  Our mission is to provide an intuitive and powerful app that breathes new life into images and videos, combining advanced technology with sleek design. Driven by creativity and collaboration, we are committed to continuous innovation and delivering an exceptional user experience.\n\nThank you for joining us on this colorful journey!"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.491"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView5" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="255dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/header"
+        app:menu="@menu/menu_file" />
+</androidx.drawerlayout.widget.DrawerLayout>

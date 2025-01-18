@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "53899618205-cgg585jb580drv3mngsvkf4p9sveq072.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.colourizer",
+            "certificate_hash": "785aeb0d208fba1c86e545c4cb6343f67fc10e8e"
+          }
+        },
+        {
           "client_id": "53899618205-dejlr8bmuun2l12jg25fsavub135rs6q.apps.googleusercontent.com",
           "client_type": 3
         }

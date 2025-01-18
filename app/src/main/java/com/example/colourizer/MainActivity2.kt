@@ -4,13 +4,19 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.annotation.NonNull
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import com.github.dhaval2404.imagepicker.ImagePicker
+import com.google.android.material.navigation.NavigationView
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -21,14 +27,16 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
-class MainActivity2 : AppCompatActivity() {
+class MainActivity2 : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private lateinit var img: ImageView
     private lateinit var btn: Button
     private lateinit var btn2: Button
     private lateinit var toolbar: Toolbar
-    private lateinit var menuButton: ImageButton
+    private lateinit var home: ImageButton
     private var selectedImageUri: Uri? = null
     private var selectedImageFile: File? = null
+    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var navView: NavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,13 +61,33 @@ class MainActivity2 : AppCompatActivity() {
             }
         }
 
-        // Initialize toolbar and menu button
-        toolbar = findViewById(R.id.toolbar)
-        menuButton = findViewById(R.id.menuButton)
+        // Initialize views
 
-        // Set up the app bar and menu
+        toolbar = findViewById(R.id.toolbar)
+        home = findViewById(R.id.home)
+        drawerLayout = findViewById(R.id.drawer_layout)
+        navView = findViewById(R.id.nav_view)
+        toolbar = findViewById(R.id.toolbar)
+
+        // Use MenuHandler to set up the drawer
         MenuHandler.setupAppBar(this, toolbar)
-        MenuHandler.setupMenu(this, menuButton)
+        MenuHandler.setupDrawer(this, toolbar, drawerLayout, navView)
+
+        // Set the navigation item selected listener
+        navView.setNavigationItemSelectedListener(this)
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        val handled = MenuHandler.handleMenuSelection(this, item)
+        drawerLayout.closeDrawer(GravityCompat.START)
+        return handled
+    }
+    override fun onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START)
+        } else {
+            super.onBackPressed()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -74,7 +102,7 @@ class MainActivity2 : AppCompatActivity() {
     }
 
     private fun uploadImage(imageFile: File) {
-        val url = "http://192.168.216.135:5000/colorize"
+        val url = "http://192.168.31.192:5000/colorize"
         val client = OkHttpClient()
 
         val mediaType = "image/jpeg".toMediaTypeOrNull()
@@ -184,4 +212,5 @@ class MainActivity2 : AppCompatActivity() {
             }
         }
     }
+
 }

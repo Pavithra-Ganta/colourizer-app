@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
-        // Handle development mode
+//         Handle development mode
 //        if (BuildConfig.DEBUG) {
 //            Toast.makeText(this, "Debug Mode: Skipping sign-in", Toast.LENGTH_SHORT).show()
 //            navigateToMainActivity2()

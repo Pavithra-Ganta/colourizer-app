@@ -1,12 +1,24 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
-    android:orientation="vertical"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
-    <include layout="@layout/appbar"/>
+    android:fitsSystemWindows="true"
+    tools:context=".Gallery"
+    tools:openDrawer="start">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+    <include
+        layout="@layout/appbar" />
+
+        <!-- New Toolbar for Selection Mode -->
+        <include
+            layout="@layout/appbar2"
+            android:visibility="gone" />
 
     <TextView
         android:id="@+id/gal"
@@ -28,3 +40,12 @@
         android:scrollbars="vertical" />
 
 </LinearLayout>
+
+<com.google.android.material.navigation.NavigationView
+android:id="@+id/nav_view"
+android:layout_width="255dp"
+android:layout_height="match_parent"
+android:layout_gravity="start"
+app:headerLayout="@layout/header"
+app:menu="@menu/menu_file" />
+    </androidx.drawerlayout.widget.DrawerLayout>

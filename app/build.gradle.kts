@@ -76,4 +76,6 @@ dependencies {
     implementation("com.google.firebase:firebase-database:21.0.0")
     implementation("com.google.firebase:firebase-analytics:22.1.2")
     implementation("com.squareup.picasso:picasso:2.71828")
+    implementation("com.google.android.material:material:1.0.0")
+
 }

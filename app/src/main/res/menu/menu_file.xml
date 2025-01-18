@@ -1,16 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--<menu xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto">-->
+<!--    <item android:id="@+id/item1"-->
+<!--        android:title="Favourites"-->
+<!--        app:showAsAction="never"-->
+<!--        />-->
+<!--    <item android:id="@+id/item2"-->
+<!--        android:title="Gallery"-->
+<!--        app:showAsAction="never"-->
+<!--        />-->
+<!--    <item android:id="@+id/item3"-->
+<!--        android:title="Sign Out"-->
+<!--        app:showAsAction="never"-->
+<!--        />-->
+<!--</menu>-->
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/item1"
-        android:title="Favourites"
-        app:showAsAction="never"
-        />
-    <item android:id="@+id/item2"
-        android:title="Gallery"
-        app:showAsAction="never"
-        />
-    <item android:id="@+id/item3"
-        android:title="Sign Out"
-        app:showAsAction="never"
-        />
-</menu>
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_gal"
+            android:icon="@drawable/gall"
+            android:title="Gallery" />
+        <item
+            android:id="@+id/nav_fav"
+            android:icon="@drawable/fav"
+            android:title="Favourites" />
+    </group>
+    <item android:title="Profile">
+    <menu>
+        <group android:checkableBehavior="single">
+            <item
+                android:id="@+id/nav_profile"
+                android:icon="@drawable/prof"
+                android:title="Profile" />
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/log"
+                android:title="Logout" />
+        </group>
+    </menu>
+    </item>
+    <item android:title="Communicate">
+    <menu>
+        <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_abt"
+            android:icon="@drawable/abt"
+            android:title="About Us" />
+        <item
+            android:id="@+id/nav_rate"
+            android:icon="@drawable/rate"
+            android:title="Rate Us" />
+        </group>
+    </menu>
+    </item>
+        </menu>

@@ -3,38 +3,35 @@ package com.example.colourizer
 import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
+import android.view.MenuItem
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import com.example.colourizer.databinding.ActivityMain3Binding
-import java.io.File
 import java.io.IOException
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
-import java.io.ByteArrayOutputStream
 import com.bumptech.glide.Glide
+import com.google.android.material.navigation.NavigationView
 
-class MainActivity3 : AppCompatActivity() {
+class MainActivity3 : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var binding: ActivityMain3Binding
     private lateinit var toolbar: Toolbar
-    private lateinit var menuButton: ImageButton
+    private lateinit var home: ImageButton
     private var isFavorite = false
+    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var navView: NavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,15 +60,15 @@ class MainActivity3 : AppCompatActivity() {
 
         // Initialize toolbar and menu button
         toolbar = findViewById(R.id.toolbar)
-        menuButton = findViewById(R.id.menuButton)
-
-        // Set up the app bar and menu button using MenuHandler (if applicable)
-        MenuHandler.setupAppBar(this, toolbar)
-        MenuHandler.setupMenu(this, menuButton)
+        home = findViewById(R.id.home)
+        home.setOnClickListener {
+            val intent = Intent(this, MainActivity2::class.java)
+            startActivity(intent)
+        }
 
         // Floating action button to navigate to another activity
         binding.floatingActionButton2.setOnClickListener {
-            val intent = Intent(this, MainActivity4::class.java)
+            val intent = Intent(this, About::class.java)
             startActivity(intent)
         }
 
@@ -143,5 +140,29 @@ class MainActivity3 : AppCompatActivity() {
                 Toast.makeText(this, "No image to save", Toast.LENGTH_SHORT).show()
             }
         }
+        drawerLayout = findViewById(R.id.drawer_layout)
+        navView = findViewById(R.id.nav_view)
+        toolbar = findViewById(R.id.toolbar)
+
+        // Use MenuHandler to set up the drawer
+        MenuHandler.setupAppBar(this, toolbar)
+        MenuHandler.setupDrawer(this, toolbar, drawerLayout, navView)
+
+        // Set the navigation item selected listener
+        navView.setNavigationItemSelectedListener(this)
+    }
+
+    override fun onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START)
+        } else {
+            super.onBackPressed()
+        }
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        val handled = MenuHandler.handleMenuSelection(this, item)
+        drawerLayout.closeDrawer(GravityCompat.START)
+        return handled
     }
 }

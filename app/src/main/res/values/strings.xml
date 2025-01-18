@@ -2,4 +2,6 @@
     <string name="app_name">Colourizer</string>
     <string name="underlined_text"><u>Upload Image</u></string>
     <string name="default_web_client_id">53899618205-19mmq29of034gh2l61db7p6q0vc310h8.apps.googleusercontent.com</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
 </resources>
