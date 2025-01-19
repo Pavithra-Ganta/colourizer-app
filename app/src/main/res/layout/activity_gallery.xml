@@ -41,11 +41,11 @@
 
 </LinearLayout>
 
-<com.google.android.material.navigation.NavigationView
-android:id="@+id/nav_view"
-android:layout_width="255dp"
-android:layout_height="match_parent"
-android:layout_gravity="start"
-app:headerLayout="@layout/header"
-app:menu="@menu/menu_file" />
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="255dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/header"
+        app:menu="@menu/menu_file" />
     </androidx.drawerlayout.widget.DrawerLayout>

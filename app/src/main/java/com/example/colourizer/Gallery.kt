@@ -111,6 +111,13 @@ class Gallery : AppCompatActivity(), NavigationView.OnNavigationItemSelectedList
     private fun onItemClick(position: Int) {
         if (isSelectionMode) {
             toggleItemSelection(position)
+        } else {
+            // Get the image URL for the clicked item
+            val selectedImage = dataList[position]
+            val intent = Intent(this, MainActivity3::class.java).apply {
+                putExtra("colorized_image_path", selectedImage.imgUrl)
+            }
+            startActivity(intent)
         }
     }
 
