@@ -80,6 +80,13 @@ class AdapterClass(
         notifyDataSetChanged()
     }
 
+    fun deselectAll() {
+        for (item in dataList) {
+            item.selected = false
+        }
+        notifyDataSetChanged()
+    }
+
     fun deleteSelectedItems() {
         dataList.removeAll { it.selected }
         notifyDataSetChanged()

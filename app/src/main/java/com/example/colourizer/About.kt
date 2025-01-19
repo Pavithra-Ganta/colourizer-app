@@ -48,7 +48,7 @@ class About : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListen
 
         // Set the navigation item selected listener
         navView.setNavigationItemSelectedListener(this)
-        navView.setCheckedItem(R.id.nav_abt);
+        navView.setCheckedItem(R.id.nav_abt)
     }
 
     override fun onBackPressed() {

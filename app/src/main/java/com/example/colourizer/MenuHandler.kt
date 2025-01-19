@@ -68,6 +68,15 @@ object MenuHandler {
     /**
      * Handles menu item selection for the popup or navigation drawer menu.
      */
+
+    fun initializeGoogleSignInClient(context: Context) {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(context.getString(R.string.default_web_client_id)) // Replace with your Web Client ID
+            .requestEmail()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(context, gso)
+    }
+
     fun handleMenuSelection(context: Context, menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
             R.id.nav_gal -> {
@@ -76,20 +85,17 @@ object MenuHandler {
             R.id.nav_fav -> {
                 context.startActivity(Intent(context, Favourites::class.java))
             }
-            R.id.nav_profile -> {
-                Toast.makeText(context, "Profile selected", Toast.LENGTH_SHORT).show()
-            }
             R.id.nav_logout -> {
-                // Ensure Google Sign-In Client is initialized
+                // Initialize GoogleSignInClient if not already done
                 if (!::googleSignInClient.isInitialized) {
-                    Toast.makeText(context, "GoogleSignInClient not initialized", Toast.LENGTH_SHORT).show()
-                    return false
+                    initializeGoogleSignInClient(context)
                 }
 
                 // Handle Google Sign-Out
                 googleSignInClient.signOut().addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        Toast.makeText(context, "Signed out successfully", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Signed out successfully", Toast.LENGTH_SHORT)
+                            .show()
                         val intent = Intent(context, MainActivity::class.java).apply {
                             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         }
@@ -100,15 +106,16 @@ object MenuHandler {
                             context.finish()
                         }
                     } else {
-                        Toast.makeText(context, "Error signing out. Please try again.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            context,
+                            "Error signing out. Please try again.",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
             R.id.nav_abt -> {
                 context.startActivity(Intent(context, About::class.java))
-            }
-            R.id.nav_rate -> {
-                Toast.makeText(context, "Rate Us selected", Toast.LENGTH_SHORT).show()
             }
             else -> return false
         }

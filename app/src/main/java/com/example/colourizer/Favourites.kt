@@ -8,6 +8,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageButton
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
@@ -28,6 +29,7 @@ import com.google.firebase.ktx.Firebase
 class Favourites : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var recyclerView: RecyclerView
+    private var allSelected = false
     private lateinit var toolbar: Toolbar
     private lateinit var toolbar2: Toolbar
     private lateinit var home: ImageButton
@@ -48,6 +50,8 @@ class Favourites : AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
         toolbar2 = findViewById(R.id.toolbar2)
 
         binding = ActivityMain3Binding.inflate(layoutInflater)
+        val delButton = findViewById<ImageButton>(R.id.delete)
+        delButton.setImageResource(R.drawable.baseline_cancel_24)
 
         home = findViewById(R.id.home)
         home.setOnClickListener {
@@ -65,7 +69,9 @@ class Favourites : AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
 
         MenuHandler.setupAppBar(this, toolbar)
         MenuHandler.setupDrawer(this, toolbar, drawerLayout, navView)
+
         navView.setNavigationItemSelectedListener(this)
+        navView.setCheckedItem(R.id.nav_fav)
 
         toolbar2.findViewById<ImageButton>(R.id.select_all).setOnClickListener {
             adapter.selectAll(true)
@@ -77,33 +83,87 @@ class Favourites : AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
             adapter.deleteSelectedItems()
             updateToolbarTitle()
         }
+        val selectAllButton = toolbar2.findViewById<ImageButton>(R.id.select_all)
+        selectAllButton.setOnClickListener {
+            if (allSelected) {
+                // Deselect all items
+                adapter.deselectAll()
+                allSelected = false
+                selectAllButton.setImageResource(R.drawable.baseline_select_all_24) // Update icon to "Select All"
+            } else {
+                // Select all items
+                adapter.selectAll(true)
+                allSelected = true
+                selectAllButton.setImageResource(R.drawable.baseline_deselect_24) // Update icon to "Deselect All"
+            }
+            updateToolbarTitle() // Update the toolbar title to reflect the selection count
+        }
+
+        toolbar2.findViewById<ImageButton>(R.id.delete).setOnClickListener {
+            // Show confirmation dialog before deleting
+            if (dataList.any { it.selected }) { // Check if any item is selected
+                AlertDialog.Builder(this)
+                    .setTitle("Unfavourite Selected Items")
+                    .setMessage("Are you sure you want to remove the selected items from favourites?")
+                    .setPositiveButton("Yes") { _, _ ->
+                        deleteFromFirebase()
+                        adapter.deleteSelectedItems()
+                        updateToolbarTitle()
+                        exitSelectionMode()
+                    }
+                    .setNegativeButton("No", null)
+                    .show()
+            } else {
+                Toast.makeText(this, "No items selected to unfavourite", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
+
 
     private fun fetchColorizedImages() {
         if (userId != null) {
-            database.child("users").child(userId).child("favourite_images")
+            // Fetch all images from colorized_images first
+            database.child("users").child(userId).child("colorized_images")
                 .addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        dataList.clear()
-                        for (child in snapshot.children) {
-                            val imgUrl = child.getValue(String::class.java)
-                            imgUrl?.let {
-                                dataList.add(ImageData(it, "Image ${dataList.size + 1}"))
-                            }
+                    override fun onDataChange(colorizedSnapshot: DataSnapshot) {
+                        val colorizedSet = mutableSetOf<String>()
+                        for (child in colorizedSnapshot.children) {
+                            child.getValue(String::class.java)?.let { colorizedSet.add(it) }
                         }
-                        adapter = AdapterClass(dataList, ::onItemLongPress, ::onItemClick)
-                        recyclerView.adapter = adapter
+
+                        // Fetch favourite images and cross-check with colorized_images
+                        database.child("users").child(userId).child("favourite_images")
+                            .addListenerForSingleValueEvent(object : ValueEventListener {
+                                override fun onDataChange(favouritesSnapshot: DataSnapshot) {
+                                    dataList.clear()
+                                    for (child in favouritesSnapshot.children) {
+                                        val favImageUrl = child.getValue(String::class.java)
+                                        if (favImageUrl != null && colorizedSet.contains(favImageUrl)) {
+                                            dataList.add(ImageData(favImageUrl, "Image ${dataList.size + 1}"))
+                                        }
+                                    }
+                                    // Update RecyclerView adapter with filtered data
+                                    adapter = AdapterClass(dataList, ::onItemLongPress, ::onItemClick)
+                                    recyclerView.adapter = adapter
+                                }
+
+                                override fun onCancelled(error: DatabaseError) {
+                                    Toast.makeText(this@Favourites, "Failed to fetch favourites: ${error.message}", Toast.LENGTH_SHORT).show()
+                                    Log.e("Favourites", "Database Error: ${error.message}")
+                                }
+                            })
                     }
 
                     override fun onCancelled(error: DatabaseError) {
-                        Toast.makeText(this@Favourites, "Failed to fetch data: ${error.message}", Toast.LENGTH_SHORT).show()
-                        Log.e("Gallery", "Database Error: ${error.message}")
+                        Toast.makeText(this@Favourites, "Failed to fetch colorized images: ${error.message}", Toast.LENGTH_SHORT).show()
+                        Log.e("Favourites", "Database Error: ${error.message}")
                     }
                 })
         } else {
             Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
         }
     }
+
 
     private fun onItemLongPress(position: Int) {
         if (!isSelectionMode) {
@@ -147,7 +207,7 @@ class Favourites : AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
         toolbar.visibility = View.VISIBLE
         toolbar2.visibility = View.GONE
         adapter.setSelectionMode(false)
-        adapter.selectAll(false)
+        adapter.deselectAll() // Clear selection when exiting selection mode
     }
 
     private fun toggleItemSelection(position: Int) {

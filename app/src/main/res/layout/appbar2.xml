@@ -16,7 +16,7 @@
         android:backgroundTint="#00000000"
         android:contentDescription="Select All"
         android:padding="8dp"
-        android:src="@drawable/baseline_deselect_24" />
+        android:src="@drawable/baseline_select_all_24" />
 
     <android.widget.ImageButton
         android:id="@+id/delete"

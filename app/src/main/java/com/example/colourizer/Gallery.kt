@@ -23,6 +23,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import androidx.appcompat.app.AlertDialog
 
 class Gallery : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -37,6 +38,7 @@ class Gallery : AppCompatActivity(), NavigationView.OnNavigationItemSelectedList
     private lateinit var navView: NavigationView
     private lateinit var adapter: AdapterClass
     private var isSelectionMode = false
+    private var allSelected = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,7 +63,9 @@ class Gallery : AppCompatActivity(), NavigationView.OnNavigationItemSelectedList
 
         MenuHandler.setupAppBar(this, toolbar)
         MenuHandler.setupDrawer(this, toolbar, drawerLayout, navView)
+
         navView.setNavigationItemSelectedListener(this)
+        navView.setCheckedItem(R.id.nav_gal)
 
         toolbar2.findViewById<ImageButton>(R.id.select_all).setOnClickListener {
             adapter.selectAll(true)
@@ -73,6 +77,41 @@ class Gallery : AppCompatActivity(), NavigationView.OnNavigationItemSelectedList
             adapter.deleteSelectedItems()
             updateToolbarTitle()
         }
+        val selectAllButton = toolbar2.findViewById<ImageButton>(R.id.select_all)
+        selectAllButton.setOnClickListener {
+            if (allSelected) {
+                // Deselect all items
+                adapter.deselectAll()
+                allSelected = false
+                selectAllButton.setImageResource(R.drawable.baseline_select_all_24) // Update icon to "Select All"
+            } else {
+                // Select all items
+                adapter.selectAll(true)
+                allSelected = true
+                selectAllButton.setImageResource(R.drawable.baseline_deselect_24) // Update icon to "Deselect All"
+            }
+            updateToolbarTitle() // Update the toolbar title to reflect the selection count
+        }
+
+        toolbar2.findViewById<ImageButton>(R.id.delete).setOnClickListener {
+            // Show confirmation dialog before deleting
+            if (dataList.any { it.selected }) { // Check if any item is selected
+                AlertDialog.Builder(this)
+                    .setTitle("Delete Selected Items")
+                    .setMessage("Are you sure you want to delete the selected items?")
+                    .setPositiveButton("Yes") { _, _ ->
+                        deleteFromFirebase()
+                        adapter.deleteSelectedItems()
+                        updateToolbarTitle()
+                        exitSelectionMode()
+                    }
+                    .setNegativeButton("No", null)
+                    .show()
+            } else {
+                Toast.makeText(this, "No items selected to delete", Toast.LENGTH_SHORT).show()
+            }
+        }
+
     }
 
     private fun fetchColorizedImages() {
@@ -141,7 +180,7 @@ class Gallery : AppCompatActivity(), NavigationView.OnNavigationItemSelectedList
         toolbar.visibility = View.VISIBLE
         toolbar2.visibility = View.GONE
         adapter.setSelectionMode(false)
-        adapter.selectAll(false)
+        adapter.deselectAll() // Clear selection when exiting selection mode
     }
 
     private fun toggleItemSelection(position: Int) {

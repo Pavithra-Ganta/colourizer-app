@@ -23,8 +23,12 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.example.colourizer.databinding.ActivityMain3Binding
 import java.io.IOException
 import com.bumptech.glide.Glide
+import com.example.recyclerview.ImageData
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
@@ -36,6 +40,9 @@ class MainActivity3 : AppCompatActivity(), NavigationView.OnNavigationItemSelect
     private var isFavorite = false
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navView: NavigationView
+    private val userId = FirebaseAuth.getInstance().currentUser?.uid
+    private val dataList = ArrayList<ImageData>()
+    private val database = Firebase.database.reference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,10 +79,6 @@ class MainActivity3 : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         }
 
         // Floating action button to navigate to another activity
-        binding.floatingActionButton2.setOnClickListener {
-            val intent = Intent(this, About::class.java)
-            startActivity(intent)
-        }
 
         // Favourites button functionality
         binding.floatingActionButton4.setOnClickListener {
@@ -83,6 +86,8 @@ class MainActivity3 : AppCompatActivity(), NavigationView.OnNavigationItemSelect
                 binding.floatingActionButton4.imageTintList = ContextCompat.getColorStateList(this, R.color.black)
                 binding.floatingActionButton4.setImageResource(R.drawable.fav)
                 Toast.makeText(this, "Removed from favourites.", Toast.LENGTH_SHORT).show()
+                //Delete from database
+                deleteFromFirebase()
             } else {
                 binding.floatingActionButton4.imageTintList = ContextCompat.getColorStateList(this, R.color.red)
                 binding.floatingActionButton4.setImageResource(R.drawable.favo)
@@ -175,6 +180,25 @@ class MainActivity3 : AppCompatActivity(), NavigationView.OnNavigationItemSelect
 
         // Set the navigation item selected listener
         navView.setNavigationItemSelectedListener(this)
+    }
+
+    private fun deleteFromFirebase() {
+        val selectedItems = dataList.filter { it.selected }
+        selectedItems.forEach { item ->
+            database.child("users").child(userId!!).child("favourite_images")
+                .orderByValue().equalTo(item.imgUrl)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        for (child in snapshot.children) {
+                            child.ref.removeValue()
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.e("Favourites", "Error deleting item: ${error.message}")
+                    }
+                })
+        }
     }
 
     override fun onBackPressed() {
