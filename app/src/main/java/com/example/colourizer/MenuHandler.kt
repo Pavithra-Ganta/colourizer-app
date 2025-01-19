@@ -74,7 +74,7 @@ object MenuHandler {
                 context.startActivity(Intent(context, Gallery::class.java))
             }
             R.id.nav_fav -> {
-                context.startActivity(Intent(context, Gallery::class.java))
+                context.startActivity(Intent(context, Favourites::class.java))
             }
             R.id.nav_profile -> {
                 Toast.makeText(context, "Profile selected", Toast.LENGTH_SHORT).show()

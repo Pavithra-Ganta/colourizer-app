@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.view.MenuItem
 import android.widget.ImageButton
 import android.widget.Toast
@@ -23,6 +24,9 @@ import com.example.colourizer.databinding.ActivityMain3Binding
 import java.io.IOException
 import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 class MainActivity3 : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -45,6 +49,7 @@ class MainActivity3 : AppCompatActivity(), NavigationView.OnNavigationItemSelect
 
         // Extract the image path from intent
         val imagePath = intent.getStringExtra("colorized_image_path")
+        val imgurLink = intent.getStringExtra("colorized_image_path")
 
         Glide.with(this)
             .load(imagePath)
@@ -82,6 +87,26 @@ class MainActivity3 : AppCompatActivity(), NavigationView.OnNavigationItemSelect
                 binding.floatingActionButton4.imageTintList = ContextCompat.getColorStateList(this, R.color.red)
                 binding.floatingActionButton4.setImageResource(R.drawable.favo)
                 Toast.makeText(this, "Added to favourites.", Toast.LENGTH_SHORT).show()
+                val auth = FirebaseAuth.getInstance()
+                val userId = auth.currentUser?.uid
+                if (userId != null) {
+                    val database = Firebase.database
+                    val ref = database.reference.child("users").child(userId).child("favourite_images")
+                    ref.push().setValue(imgurLink).addOnSuccessListener {
+                        runOnUiThread {
+                            Toast.makeText(this@MainActivity3, "Favourites saved", Toast.LENGTH_SHORT).show()
+                        }
+                    }.addOnFailureListener { e ->
+                        runOnUiThread {
+                            Toast.makeText(this@MainActivity3, "Failed to save Favourite: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                        Log.e("MainActivity2", "Firebase save error: ${e.message}")
+                    }
+                } else {
+                    runOnUiThread {
+                        Toast.makeText(this@MainActivity3, "User not logged in.", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
             isFavorite = !isFavorite
         }
